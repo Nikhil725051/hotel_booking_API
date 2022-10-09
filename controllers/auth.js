@@ -33,7 +33,7 @@ export const loginUser = async(req, res, next) => {
                 const token = Jwt.sign({id: user._id, isAdmin: user.isAdmin}, process.env.JWT_KEY);
                 const {password, isAdmin, ...otherDetails} = user.toObject();
                 res.status(200).setHeader('Content-Type', 'application/josn');
-                res.cookie("access_toke", token, {httpOnly: true}).json(otherDetails);
+                res.cookie("access_token", token, {httpOnly: true}).json(otherDetails);
                }else{
                 return next(createError(403, "Incorrect password"));
             }
