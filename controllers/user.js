@@ -19,7 +19,7 @@ export const getUsers = async(req, res, next) => {
 export const updateUser = async(req, res, next) => {
     try{
         const user = await Users.findByIdAndUpdate(
-            req.params.id,
+            req.user.id,
             {$set: req.body},
             {new: true});
         res.status(200).setHeader('Content-Type', 'application/json');
@@ -32,7 +32,7 @@ export const updateUser = async(req, res, next) => {
 
 export const deleteUser = async(req, res, next) => {
     try{
-      const user = await Users.findByIdAndDelete(req.params.id);
+      const user = await Users.findByIdAndDelete(req.user.id);
       res.status(200).setHeader('Content-Type', 'application/json');
       res.json({message: "User has been deleted"});
     }catch(err){

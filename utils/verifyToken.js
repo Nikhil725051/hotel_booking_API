@@ -21,16 +21,12 @@ const verifyToken = (req, res, next) => {
 export const verifyUser = async (req, res, next) => {
   try{
     verifyToken(req, res, next);
-    if(req.user.id == req.params.id){
-        const user = await User.findOne({_id: req.user.id});
-        if(user!=null){
-            return next();
-        }else{
-            throw (createError(404, "User not found"));
-        }
-    }else{
-        throw (createError(401, "You are not authorized"));
+    const user = await User.findById(req.user.id);
+    if(user!=null){
+      return next();
     }
+    throw (createError(404, "User not found"));
+
    }catch (err){
         next(err);
     }
@@ -41,7 +37,6 @@ export const verifyAdmin = (req, res, next) => {
     if(req.user.isAdmin){
         return next();
     }
-    console.log(req.user.isAdmin)
 
     next(createError(401, "You are not authorized to perform this operation"));
 }
