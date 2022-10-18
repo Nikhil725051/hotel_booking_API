@@ -27,6 +27,18 @@ app.use('/hotels', hotelRouter);
 app.use('/rooms', roomRouter);
 app.use('/auth', authRouter);
 
+app.use((err, req, res, next) => {
+    const errStatus = err.status || 500;
+    const errMess = err.message || "Something went wrong";
+    res.status(errStatus).setHeader('Content-Type', 'application/json');
+    res.json({
+        success: false,
+        status: errStatus,
+        message: errMess,
+        stack: err.stack
+    });
+})
+
 
 app.listen('8800', () => {
     connectToMongoDB();

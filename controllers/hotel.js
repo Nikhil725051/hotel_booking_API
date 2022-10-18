@@ -16,8 +16,12 @@ export const createHotel =  async (req, res, next) => {
 }
 
 export const getHotels = async(req, res, next) => {
+    const {min, max, ...others} = req.query;
     try{
-        var hotels = await Hotel.find();
+        var hotels = await Hotel.find(
+            {...others,
+            cheapestPrice: {$gt:min || 1, $lt: max || 10000}}
+        ).limit(req.query.limit);
         res.status(200)
            .setHeader('Content-Type', 'applictaion/json')
            .json(hotels)
@@ -46,5 +50,38 @@ export const updateHotel = async(req, res, next) => {
         res.json(hotel);
     }catch(err){
         next(err)
+    }
+}
+
+
+export const countByCity = async(req, res, next) => {
+
+    const cities = req.query.cities.split(',');
+    try{
+        const count = await Promise.all(cities.map( async (city) => {
+           return await Hotel.countDocuments({city: city})
+        }));
+        res.status(200).setHeader('Content-Type', 'application/json');
+        res.json(count);
+    }catch(err){
+        next(err);
+    }
+}
+
+export const countByType = async(req, res, next) => {
+    try{
+        const hotelCount = await Hotel.countDocuments({type: 'Hotel'});
+        const apartmentCount = await Hotel.countDocuments({type: 'Apartment'});
+        const villaCount = await Hotel.countDocuments({type: 'Villa'});
+        const resortCount = await Hotel.countDocuments({type: 'Resort'});
+        res.status(200).setHeader('Content-Type', 'application/json');
+        res.json([
+            {type: "Hotel", count: hotelCount},
+            {type: "Apartment", count: apartmentCount},
+            {type: "Villa", count: villaCount},
+            {type: "Resort", count: resortCount},
+          ]);
+    }catch(err){
+        next(err);
     }
 }

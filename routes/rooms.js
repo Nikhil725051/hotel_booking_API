@@ -12,7 +12,7 @@ roomRouter.get('/:id', getRoom);
 
 roomRouter.put('/:id', verifyUser, verifyAdmin, updateRoom);
 
-roomRouter.delete('/:id',verifyUser, verifyAdmin, deleteRoom);
+roomRouter.delete('/:id/:hotelId',verifyUser, verifyAdmin, deleteRoom);
 
 
 export default roomRouter

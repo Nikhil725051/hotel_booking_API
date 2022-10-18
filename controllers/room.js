@@ -50,6 +50,7 @@ export const updateRoom = async (req, res, next) => {
 export const deleteRoom = async (req, res, next) => {
     try{
         await Rooms.findByIdAndDelete(req.params.id);
+        await Hotel.findByIdAndUpdate(req.params.hotelId, {$pull: {rooms: req.params.id}});
         res.status(200).setHeader('Content-Type', 'application/json');
         res.json({message: "Room has been deleted"});
     }catch(err){
